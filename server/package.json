@@ -1,0 +1,27 @@
+{
+  "name": "ticket-booking-system",
+  "version": "1.0.0",
+  "description": "Cinevia movie ticket booking API (Express, MySQL, Redis, JWT)",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "migrate": "node scripts/migrate.js",
+    "seed": "node scripts/seed.js",
+    "setup": "node scripts/migrate.js && node scripts/seed.js",
+    "test": "node --test \"test/*.test.js\"",
+    "smoke": "node scripts/smoke.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mysql2": "^3.20.0",
+    "redis": "^5.12.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}

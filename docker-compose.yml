@@ -1,0 +1,8 @@
+# Redis for temporary seat holds. The MySQL database is your Aiven instance (not run locally).
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: cinevia-redis
+    ports:
+      - "9000:6379"     # matches REDIS_URL=redis://localhost:9000
+    restart: unless-stopped

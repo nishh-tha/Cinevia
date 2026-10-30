@@ -1,0 +1,3 @@
+export default function ShowtimeSelector({days,date,onDate,listings,onPick,loading}){return(<div>
+<div className="dates">{days.map(d=><button key={d.iso} className={d.iso===date?'chip on':'chip'} onClick={()=>onDate(d.iso)}>{d.day} {d.date} {d.month}</button>)}</div>
+{loading?<p className="muted">Loading showtimes</p>:!listings.length?<p className="muted">No showtimes available for this date and city.</p>:listings.map(({cinema,shows})=><div key={cinema.id} className="cinema"><h4>{cinema.name}</h4><div className="times">{shows.map(s=><button key={s.id} className="time" onClick={()=>onPick(cinema,s)}>{s.time}</button>)}</div></div>)}</div>)}
