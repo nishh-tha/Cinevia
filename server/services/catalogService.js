@@ -27,6 +27,7 @@ const movieView = (m) => ({
     ? new Date(m.release_date).toLocaleDateString("en-IN", { day: "numeric", month: "short", timeZone: "UTC" }) : undefined,
   color: m.color,
   poster: poster(m.color),
+  posterUrl: m.poster_url || null,
   synopsis: m.synopsis,
   cast: list(m.cast_list),
   trailer: m.trailer_url,
@@ -98,7 +99,7 @@ async function getMovieShows(movieId, { date, city } = {}) {
 async function loadShow(showId) {
   const [rows] = await db.query(
     `SELECT s.id, s.screen_id, s.starts_at, s.base_price_paise, s.status,
-            sc.name screen_name, m.id movie_id, m.title, m.color, c.id cinema_id, c.name cinema_name, c.address, ci.name city_name
+            sc.name screen_name, m.id movie_id, m.title, m.color, m.poster_url, c.id cinema_id, c.name cinema_name, c.address, ci.name city_name
        FROM rs_showtimes s
        JOIN rs_screens sc ON sc.id = s.screen_id
        JOIN rs_cinemas c ON c.id = sc.cinema_id
@@ -115,7 +116,12 @@ const showView = (s) => {
   const startsAt = new Date(s.starts_at);
   return {
     id: s.id,
-    movie: { id: s.movie_id, title: s.title, poster: poster(s.color) },
+    movie: {
+      id: s.movie_id,
+      title: s.title,
+      poster: poster(s.color),
+      posterUrl: s.poster_url || null,
+    },
     cinema: { id: s.cinema_id, name: s.cinema_name, address: s.address, city: s.city_name },
     screen: s.screen_name,
     startsAt: startsAt.toISOString(),
