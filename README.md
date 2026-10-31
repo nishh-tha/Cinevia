@@ -2,29 +2,40 @@
 
 ### A Redis-Powered Movie Ticket Booking Platform
 
-Cinevia is a full-stack movie ticket booking application designed to provide a seamless booking experience while preventing double bookings through Redis-powered temporary seat reservations.
+[🌐 **Visit Live Website**](https://cinevia-26jcsbvq4-nishh-thas-projects.vercel.app)
 
-Users can explore movies, browse cinemas and showtimes, select seats, and confirm bookings through an interactive interface. The backend combines JWT authentication, Redis-based seat locking, and MySQL persistence to ensure reliable booking operations.
+Cinevia is a full-stack movie ticket booking platform designed to deliver a seamless movie discovery and booking experience while preventing double bookings through Redis-powered temporary seat reservations.
+
+Users can explore movies, browse cinemas across multiple cities, view showtimes, select seats, and manage their bookings through an interactive interface.
+
+Built with React, Node.js, Express, MySQL, and Redis, Cinevia combines JWT authentication, temporary seat locking, and transactional database operations to ensure reliable booking workflows.
 
 ---
 
 ## ✨ Features
 
-### 🎟️ Movie Discovery & Booking
-- Browse currently available movies.
-- Explore cinemas across multiple cities.
-- View movie showtimes.
+### 🎥 Movie Discovery
+- Browse currently showing and upcoming movies.
+- Explore movie details, genres, ratings, cast, and synopsis.
+- Search movies by title.
+- Movie posters hosted on Cloudinary.
+- Browse cinemas across multiple cities.
+- View available showtimes.
+
+### 🎟️ Ticket Booking
 - Interactive cinema seat selection.
-- Different pricing for Standard and Premium seats.
+- Standard and Premium seat categories.
+- Different pricing based on seat type.
+- Temporary seat reservations.
 - Booking confirmation and booking history.
 - Booking cancellation.
 
 ### ⚡ Redis-Powered Seat Reservation
 - Temporary seat holds using Redis.
-- Five-minute seat reservation window.
-- Automatic expiration of seat holds using TTL.
+- Five-minute reservation window using TTL.
 - Prevents multiple users from holding the same seat simultaneously.
-- All-or-nothing seat selection and reservation.
+- All-or-nothing seat reservation.
+- Automatic expiration of abandoned seat holds.
 - Database-level safeguards against duplicate bookings.
 
 ### 🔐 Authentication & Security
@@ -44,43 +55,52 @@ Users can explore movies, browse cinemas and showtimes, select seats, and confir
 | Routing | React Router |
 | Backend | Node.js, Express.js |
 | Database | MySQL (Aiven) |
-| Caching & Seat Locking | Redis |
+| Caching & Seat Locking | Redis (Upstash) |
 | Authentication | JWT, bcrypt |
-| Infrastructure | Docker, Docker Compose |
+| Movie Poster Hosting | Cloudinary |
+| Frontend Deployment | Vercel |
+| Backend Deployment | Render |
+| Containerization | Docker, Docker Compose |
 
 ---
 
-## 🏗️ Architecture
+## 🏗️ System Architecture
 
 ```text
-                 USERS
-                   |
-                   v
-           REACT + VITE
-                   |
-                   v
-             EXPRESS API
-                   |
-          +--------+--------+
-          |                 |
-          v                 v
-       REDIS             MYSQL
-          |                 |
-    Temporary Seat      Persistent Data
-       Locks            Users, Movies,
-    Hold Expiration     Showtimes, Bookings
+                       USERS
+                         |
+                         v
+                   REACT + VITE
+                         |
+                         v
+                    EXPRESS API
+                         |
+              +----------+----------+
+              |                     |
+              v                     v
+            REDIS                 MYSQL
+              |                     |
+       Temporary Seat          Persistent Data
+           Locks                Users, Movies,
+       Hold Expiration          Showtimes, Bookings
+
+                         |
+                         v
+                     CLOUDINARY
+                         |
+                    Movie Posters
 ```
 
 ### How Seat Locking Works
 
-Cinevia uses Redis to manage temporary seat reservations.
+Cinevia uses Redis to manage temporary seat reservations and reduce booking conflicts.
 
 1. A user selects one or more available seats.
-2. The backend checks their availability.
-3. Redis creates temporary holds with a five-minute TTL.
-4. Other users cannot hold the same seats while the reservation is active.
+2. The backend validates seat availability.
+3. Redis creates temporary seat holds with a five-minute TTL.
+4. Other users cannot reserve the same seats while the holds are active.
 5. When the user confirms the booking, the backend validates the hold and persists the booking in MySQL.
-6. If the hold expires, the seats become available again.
+6. If the reservation expires, the seats become available again.
 
 MySQL transactions and database constraints provide additional protection against duplicate bookings.
 
@@ -128,15 +148,15 @@ Cinevia/
 Make sure you have installed:
 
 - Node.js and npm
-- Docker Desktop
 - Git
+- Docker Desktop (optional, for local Redis)
 - A MySQL database (Aiven MySQL or another compatible MySQL instance)
-- A Redis instance
+- A Redis instance (local Redis or Upstash)
 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/Cinevia.git
+git clone https://github.com/nishh-tha/Cinevia.git
 cd Cinevia
 ```
 
@@ -151,6 +171,7 @@ Create a `.env` file using `.env.example`:
 
 ```env
 PORT=3000
+NODE_ENV=development
 CORS_ORIGINS=http://localhost:5173
 
 DB_HOST=your-mysql-host
@@ -162,7 +183,7 @@ DB_NAME=your-database-name
 DB_SSL=true
 DB_SSL_CA_PATH=certs/ca.pem
 
-REDIS_URL=redis://localhost:9000
+REDIS_URL=your-redis-connection-url
 
 JWT_SECRET=your-long-random-secret
 JWT_EXPIRES_IN=2h
@@ -183,11 +204,15 @@ Keep credentials and certificates private. Never commit `.env` or private certif
 
 ### 3. Start Redis
 
-From the project root:
+If using the provided Docker Compose configuration, run this from the project root:
 
 ```bash
 docker compose up -d redis
 ```
+
+Alternatively, use an existing Redis instance such as Upstash.
+
+Make sure `REDIS_URL` matches your Redis configuration.
 
 ### 4. Run database migrations
 
@@ -203,25 +228,38 @@ npm run migrate
 npm run seed
 ```
 
+This populates the database with sample movies, cities, cinemas, screens, seats, and showtimes.
+
 ### 6. Start the backend
 
 ```bash
 npm start
 ```
 
-The backend will run at:
+The backend runs at:
 
 ```text
 http://localhost:3000
 ```
 
-### 7. Start the frontend
+### 7. Configure and start the frontend
 
 Open a second terminal:
 
 ```bash
 cd frontend
 npm install
+```
+
+Create a `.env` file inside the `frontend` directory:
+
+```env
+VITE_API_BASE_URL=http://localhost:3000/api
+```
+
+Start the development server:
+
+```bash
 npm run dev
 ```
 
@@ -233,10 +271,45 @@ http://localhost:5173
 
 ---
 
+## 🚀 Deployment
+
+Cinevia uses the following deployment setup:
+
+| Component | Platform |
+|---|---|
+| Frontend | Vercel |
+| Backend API | Render |
+| MySQL Database | Aiven |
+| Redis | Upstash |
+| Movie Posters | Cloudinary |
+
+### Frontend Configuration
+
+Set the following environment variable in Vercel:
+
+```env
+VITE_API_BASE_URL=https://cinevia-backend.onrender.com/api
+```
+
+### Backend Configuration
+
+Configure the required environment variables in Render:
+
+- MySQL connection credentials
+- Redis connection URL
+- JWT secret
+- CORS allowed origins
+- Database SSL configuration
+
+The deployed frontend origin must be included in `CORS_ORIGINS`.
+
+---
+
 ## 🔌 API Overview
 
 | Method | Endpoint | Description |
 |---|---|---|
+| GET | `/api/health` | API health check |
 | GET | `/api/cities` | Retrieve available cities |
 | GET | `/api/movies` | Retrieve movie listings |
 | GET | `/api/movies/:id` | Retrieve movie details |
@@ -249,7 +322,7 @@ http://localhost:5173
 | GET | `/api/bookings/mine` | Retrieve the user's bookings |
 | POST | `/api/bookings/:id/cancel` | Cancel a booking |
 
-Authentication endpoints are also available for registration and login.
+Authentication endpoints are also available for user registration and login.
 
 ---
 
@@ -262,7 +335,7 @@ cd server
 npm test
 ```
 
-The test suite covers:
+The test suite covers areas including:
 
 - Seat reservation and release.
 - Concurrent seat-hold conflicts.
@@ -279,7 +352,7 @@ The test suite covers:
 
 Cinevia currently supports demo booking confirmation without an integrated payment gateway.
 
-No actual payment is collected or processed. Payment gateway integration is intentionally outside the current project scope.
+No actual payment is collected or processed. Payment gateway integration is outside the current project scope.
 
 ---
 
@@ -291,8 +364,9 @@ No actual payment is collected or processed. Payment gateway integration is inte
 - Enhanced user booking dashboard.
 - Concurrency and load testing.
 - Improved booking notifications.
+- Payment gateway integration.
 
 ---
 
 
-*Built with React, Node.js, MySQL and Redis.*
+*Built with React, Node.js, Express, MySQL, and Redis.*
