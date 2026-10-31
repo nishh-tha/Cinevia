@@ -4,7 +4,10 @@ node_modules/
 
 # Environment files
 .env
+.env.*
+!.env.example
 **/.env
+**/.env.*
 
 # Logs
 *.log
@@ -13,5 +16,5 @@ node_modules/
 .DS_Store
 Thumbs.db
 
-# Aiven SSL certificate
+# Aiven SSL certificates
 server/certs/
