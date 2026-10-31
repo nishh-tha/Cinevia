@@ -2,7 +2,7 @@
 
 ### A Redis-Powered Movie Ticket Booking Platform
 
-[🌐 **Visit Live Website**](https://cinevia-26jcsbvq4-nishh-thas-projects.vercel.app)
+[🌐 **Visit Live Website**](https://cinevia-kohl.vercel.app/)
 
 Cinevia is a full-stack movie ticket booking platform designed to deliver a seamless movie discovery and booking experience while preventing double bookings through Redis-powered temporary seat reservations.
 
