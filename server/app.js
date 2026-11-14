@@ -20,7 +20,6 @@ function createApp() {
   app.use("/api/auth", require("./routes/authRoutes"));
   app.use("/api", require("./routes/catalogRoutes"));
   app.use("/api", require("./routes/bookingRoutes"));
-  app.use("/api", require("./routes/bookingRoutes"));
   app.use("/api/db", require("./routes/dbBookingRoutes"));   // DB-only locking (new)
 
   app.use(notFound);
