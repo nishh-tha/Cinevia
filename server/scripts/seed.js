@@ -28,7 +28,7 @@ const cinemasFor = (city) => city === "Kadapa"
   ? [{ name: "PVR Kadapa Central", times: DEFAULT_TIMES }, { name: "Sri Venkateswara Cinemas", times: ["11:00", "14:30", "18:00", "21:30"] }]
   : [{ name: `${city} Central Cinema`, times: DEFAULT_TIMES }, { name: `${city} Galaxy Multiplex`, times: ["11:00", "14:30", "18:00", "21:30"] }];
 
-(async function runSeed() {
+async function runSeed() {
   config.assertReady();
 
   for (const [name, state] of CITIES)
