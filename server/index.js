@@ -4,6 +4,7 @@ config.assertReady();
 const createApp = require("./app");
 const db = require("./db/database");
 const redis = require("./cache/redisClient");
+const runSeed = require("./scripts/seed");
 
 const app = createApp();
 
@@ -17,6 +18,9 @@ const app = createApp();
   }
 
   const server = app.listen(config.port, () => console.log(`Cinevia API listening on port ${config.port}`));
+  const topUpShows = () => runSeed().catch((e) => console.error("[seed] failed:", e.message));
+  topUpShows();                                  // runs every time the server starts
+  setInterval(topUpShows, 12 * 60 * 60 * 1000);  // and again every 12 hours
 
   const shutdown = (signal) => {
     console.log(`${signal} received, shutting down...`);

@@ -6,7 +6,7 @@ const db = require("../db/database");
 const { zonedToUtc, todayString, toMysqlUtc } = require("../utils/time");
 
 const TZ = config.booking.timezone;
-const DAYS_AHEAD = 7;
+const DAYS_AHEAD = 30;
 const BASE_PRICE_PAISE = 25000;       // Rs 250 standard
 const ROWS = "ABCDEFGH".split("");    // A-B premium (x1.4 = Rs 350), C-H standard
 const SEATS_PER_ROW = 12;
@@ -28,7 +28,7 @@ const cinemasFor = (city) => city === "Kadapa"
   ? [{ name: "PVR Kadapa Central", times: DEFAULT_TIMES }, { name: "Sri Venkateswara Cinemas", times: ["11:00", "14:30", "18:00", "21:30"] }]
   : [{ name: `${city} Central Cinema`, times: DEFAULT_TIMES }, { name: `${city} Galaxy Multiplex`, times: ["11:00", "14:30", "18:00", "21:30"] }];
 
-(async () => {
+(async function runSeed() {
   config.assertReady();
 
   for (const [name, state] of CITIES)
@@ -83,5 +83,13 @@ const cinemasFor = (city) => city === "Kadapa"
     }
   }
   console.log(`Seed complete: ${CITIES.length} cities, ${MOVIES.length} movies, ${shows} new showtimes (sample data).`);
-  await db.end();
-})().catch((e) => { console.error("Seed failed:", e.message); process.exit(1); });
+}
+
+module.exports = runSeed;
+
+// still works manually with: npm run seed
+if (require.main === module) {
+  runSeed()
+    .then(() => db.end())
+    .catch((e) => { console.error("Seed failed:", e.message); process.exit(1); });
+}
