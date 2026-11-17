@@ -6,11 +6,6 @@ const db = require("../db/database");
 const { zonedToUtc, todayString, toMysqlUtc } = require("../utils/time");
 
 const TZ = config.booking.timezone;
-// "YYYY-MM-DD" for N days from today in the booking timezone
-const daysFromToday = (n) => {
-  const [y, m, d] = todayString(TZ).split("-").map(Number);
-  return new Date(Date.UTC(y, m - 1, d + n)).toISOString().slice(0, 10);
-};
 const DAYS_AHEAD = 30;
 const BASE_PRICE_PAISE = 25000;       // Rs 250 standard
 const ROWS = "ABCDEFGH".split("");    // A-B premium (x1.4 = Rs 350), C-H standard
@@ -24,8 +19,8 @@ const MOVIES = [
   ["Paper Monsoon", "Hindi", 151, "U", "Romance,Drama", 7.9, "NOW", null, "#274b6d", "Two letter-writers in Mumbai fall for each other without ever meeting.", "R. Kapoor,N. Iyer"],
   ["Iron Orchard", "Telugu", 165, "UA", "Action", 8.1, "NOW", null, "#5b3a1a", "A retired soldier defends his village from land grabbers.", "V. Reddy,S. Rao"],
   ["The Last Cartographer", "English", 125, "U", "Adventure,Fantasy", 7.6, "NOW", null, "#2c5a46", "A mapmaker follows a chart that redraws itself.", "E. Hale,J. Park"],
-  ["Static", "Tamil", 118, "UA", "Sci-Fi,Thriller", 0, "SOON", daysFromToday(10), "#4a2a63", "A radio operator hears broadcasts from tomorrow.", "D. Kumar"],
-  ["Saffron Road", "Hindi", 130, "U", "Comedy", 0, "SOON", daysFromToday(24), "#8a5a12", "A food-truck road trip across Rajasthan goes wrong, deliciously.", "P. Shah"],
+  ["Static", "Tamil", 118, "UA", "Sci-Fi,Thriller", 0, "SOON", "2026-11-14", "#4a2a63", "A radio operator hears broadcasts from tomorrow.", "D. Kumar"],
+  ["Saffron Road", "Hindi", 130, "U", "Comedy", 0, "SOON", "2026-11-28", "#8a5a12", "A food-truck road trip across Rajasthan goes wrong, deliciously.", "P. Shah"],
 ];
 
 const DEFAULT_TIMES = ["10:30", "13:45", "17:15", "21:00"];
